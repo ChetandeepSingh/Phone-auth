@@ -29,7 +29,9 @@ export default function ProfilePage() {
         // If network error but token exists, use fallback profile from localStorage
         if (!err.response) {
           const phoneFallback = typeof window !== "undefined" ? localStorage.getItem("user_phone") : null;
-          setUser({ name: "User", phone: phoneFallback || "Unknown" });
+          const nameFallback = typeof window !== "undefined" ? localStorage.getItem("user_name") : "User";
+          const detailsFallback = typeof window !== "undefined" ? localStorage.getItem("user_details") : "";
+          setUser({ name: nameFallback, phone: phoneFallback || "Unknown", details: detailsFallback });
         } else {
           setError("Session expired. Please login again.");
           setTimeout(() => router.replace("/login"), 1500);
@@ -84,6 +86,9 @@ export default function ProfilePage() {
         </div>
         <div className="text-lg font-semibold text-gray-800">{user?.name || "User"}</div>
         <div className="text-gray-500 mb-2">{user?.phone}</div>
+        {user?.details && (
+          <p className="text-gray-700 text-center whitespace-pre-wrap mb-4 max-w-sm">{user.details}</p>
+        )}
         <div className="mb-4 text-green-700 font-semibold">Authentication status: Authenticated</div>
         <button
           onClick={handleLogout}

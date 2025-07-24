@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Toast from "../Toast";
+import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -86,6 +87,12 @@ export default function LoginPage() {
           </button>
         </form>
       </div>
+      <p className="mt-4 text-sm text-gray-700">
+        Don't have an account?{' '}
+        <Link href="/register" className="font-semibold text-indigo-600 hover:underline">
+          Register
+        </Link>
+      </p>
       <Toast message="OTP sent successfully!" show={showToast} onClose={() => setShowToast(false)} />
     </div>
   );

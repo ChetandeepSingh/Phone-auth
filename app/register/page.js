@@ -3,11 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Toast from "../Toast";
+import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [details, setDetails] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -19,19 +22,24 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (!name.trim()) {
+      setError("Name is required.");
+      return;
+    }
     if (!validatePhone(phone)) {
       setError("Please enter a valid 10-digit phone number.");
       return;
     }
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/auth/send-otp`, { phone, action: mode });
+      await axios.post(`${API_URL}/api/auth/send-otp`, { name, phone, details, action: mode });
     } catch (err) {
       console.error(err);
     }
     if (typeof window !== "undefined") {
+      localStorage.setItem("user_name", name);
       localStorage.setItem("user_phone", phone);
-      localStorage.setItem("auth_action", mode);
+      localStorage.setItem("user_details", details);
     }
     setLoading(false);
     setShowToast(true);
@@ -46,6 +54,20 @@ export default function RegisterPage() {
       <div className="w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/60 bg-white/60 backdrop-blur-lg flex flex-col gap-6 items-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 text-center tracking-tight bg-gradient-to-r from-indigo-700 to-fuchsia-600 text-transparent bg-clip-text drop-shadow-lg">Register</h1>
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5" aria-label="Register Form">
+          <label htmlFor="name" className="font-semibold text-gray-700">
+            Full Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            className="border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white/90 placeholder-gray-500 shadow-sm"
+            placeholder="John Doe"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={loading}
+            required
+          />
           <label htmlFor="phone" className="font-semibold text-gray-700">
             Phone Number
           </label>
@@ -63,6 +85,19 @@ export default function RegisterPage() {
             pattern="\d{10}"
             aria-invalid={!!error}
             aria-describedby={error ? "phone-error" : undefined}
+          />
+          <label htmlFor="details" className="font-semibold text-gray-700">
+            About / Details (optional)
+          </label>
+          <textarea
+            id="details"
+            name="details"
+            rows="3"
+            className="border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white/90 placeholder-gray-500 shadow-sm"
+            placeholder="Tell us something about yourself"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            disabled={loading}
           />
           {error && (
             <div className="text-red-600 text-sm" role="alert" id="phone-error">
@@ -85,6 +120,12 @@ export default function RegisterPage() {
           </button>
         </form>
       </div>
+      <p className="mt-4 text-sm text-gray-700">
+        Already have an account?{' '}
+        <Link href="/login" className="font-semibold text-indigo-600 hover:underline">
+          Login
+        </Link>
+      </p>
       <Toast message="OTP sent successfully!" show={showToast} onClose={() => setShowToast(false)} />
     </div>
   );
