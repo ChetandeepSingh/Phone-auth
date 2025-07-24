@@ -8,30 +8,30 @@ A modern, responsive authentication system built with Next.js that implements ph
 - 🔐 Phone number-based authentication
 - 📲 OTP verification system
 - 🚪 Separate Login & Register flows
-- 🛡️ Protected routes with middleware
+- 🛡️ Protected routes with middleware (client-side protection implemented)
 - 🔄 Token-based session management
 
 ### UI/UX
-- 🎨 Modern glassmorphic design
+- 🎨 Modern glassmorphic design with a vibrant color palette
 - 📱 Responsive layout (mobile-first)
 - ⚡ Smooth transitions & animations
-- 🎯 Clear user feedback
-- ♿ Accessible forms & notifications
+- 🎯 Clear user feedback (loading states, errors)
+- ♿ Accessible forms & toast notifications for success messages
 
 ### Technical Features
-- 🔒 Secure token storage
-- 🌐 API integration ready
-- 🔄 Fallback offline support
-- 🎭 Role-based access control
-- 📝 Form validation
+- 📝 Comprehensive user registration (Name, Email, Phone)
+- 🔒 Secure token storage in `localStorage`
+- 🌐 API integration with Axios
+- 🔄 Graceful fallback for offline/local development
+- 🚀 Seamless navigation between pages using Next.js App Router
 
 ## 🛠️ Tech Stack
 
-- **Frontend Framework**: Next.js 14
+- **Frontend Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS
 - **HTTP Client**: Axios
-- **Font**: Inter (Google Fonts)
-- **Authentication**: JWT (stored in localStorage)
+- **Font**: Inter (from `next/font`)
+- **Authentication**: JWT (simulated with a demo token)
 
 ## 🚀 Getting Started
 
@@ -54,7 +54,7 @@ npm install
 yarn install
 ```
 
-3. Create a `.env.local` file in the root directory:
+3. Create a `.env.local` file in the root directory and add your backend API URL:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3004
 ```
@@ -78,14 +78,14 @@ phone-auth-system/
 │   ├── register/
 │   │   └── page.js       # Registration page
 │   ├── verify/
-│   │   └── page.js       # OTP verification
+│   │   └── page.js       # OTP verification page
 │   ├── profile/
 │   │   └── page.js       # Protected profile page
 │   ├── layout.js         # Root layout
-│   └── Toast.js          # Toast notification component
+│   └── Toast.js          # Reusable toast notification component
 ├── public/               # Static assets
-├── .env.local           # Environment variables
-└── package.json         # Project dependencies
+├── .env.local            # Environment variables
+└── package.json          # Project dependencies
 ```
 
 ## 🔌 API Integration
@@ -96,23 +96,35 @@ The system is designed to work with the following API endpoints:
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| POST | `/api/auth/send-otp` | Send OTP to mobile | No |
-| POST | `/api/auth/verify-otp` | Verify OTP & login | No |
-| GET | `/api/auth/profile` | Get user profile | Yes |
-| POST | `/api/auth/logout` | Logout user | Yes |
+| POST | `/api/auth/send-otp` | Send OTP to a phone number | No |
+| POST | `/api/auth/verify-otp` | Verify OTP & login/register | No |
+| GET | `/api/auth/profile` | Get user profile data | Yes |
+| POST | `/api/auth/logout` | Invalidate token and logout user | Yes |
 
 ### API Request Examples
 
-#### Send OTP
+#### Send OTP (Login)
 ```javascript
 POST /api/auth/send-otp
 {
   "phone": "1234567890",
-  "action": "login" // or "register"
+  "action": "login"
+}
+```
+
+#### Send OTP (Register)
+```javascript
+POST /api/auth/send-otp
+{
+  "name": "John Doe",
+  "phone": "1234567890",
+  "email": "john.doe@example.com",
+  "action": "register"
 }
 ```
 
 #### Verify OTP
+The payload is the same for both login and register flows.
 ```javascript
 POST /api/auth/verify-otp
 {
@@ -124,36 +136,13 @@ POST /api/auth/verify-otp
 
 ## 🔐 Authentication Flow
 
-1. User enters phone number (Login/Register)
-2. System sends OTP to phone
-3. User verifies OTP
-4. System issues JWT token
-5. Protected routes check token
-6. Profile page shows user data
-
-## 🎨 UI Components
-
-- **Glassmorphic Cards**: Semi-transparent with backdrop blur
-- **Gradient Buttons**: Interactive with hover/focus states
-- **Toast Notifications**: Non-intrusive feedback
-- **Loading States**: Spinners and disabled states
-- **Error Messages**: Clear validation feedback
-
-## 📱 Responsive Design
-
-- Mobile-first approach
-- Flexible layouts
-- Touch-friendly inputs
-- Readable typography
-- Adaptive spacing
-
-## 🛡️ Security Features
-
-- Input validation
-- Protected routes
-- Secure token storage
-- API error handling
-- Session management
+1.  **Welcome Page**: User chooses to Login or Register.
+2.  **Register**: User provides Name, Phone, and Email. An OTP is sent.
+3.  **Login**: User provides their Phone Number. An OTP is sent.
+4.  **Verification**: User enters the 6-digit OTP.
+5.  **Token Generation**: On successful verification, the backend issues a JWT token, which is stored in `localStorage`.
+6.  **Profile Access**: The user is redirected to the `/profile` page, which is protected. If the token is invalid or missing, the user is redirected back to `/login`.
+7.  **Logout**: The user can log out, which clears the token from `localStorage` and invalidates the session on the backend.
 
 ## 🤝 Contributing
 
@@ -161,4 +150,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
+

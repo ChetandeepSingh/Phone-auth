@@ -27,9 +27,13 @@ export default function VerifyPage() {
     }
     setLoading(true);
     const phone = typeof window !== "undefined" ? localStorage.getItem("user_phone") : "";
+    const name = typeof window !== "undefined" ? localStorage.getItem("user_name") : "";
+    const email = typeof window !== "undefined" ? localStorage.getItem("user_email") : "";
     const action = typeof window !== "undefined" ? localStorage.getItem("auth_action") : "login";
+
     try {
-      const res = await axios.post(`${API_URL}/api/auth/verify-otp`, { phone, otp, action });
+      const payload = { phone, otp, action, name, email };
+      const res = await axios.post(`${API_URL}/api/auth/verify-otp`, payload);
       const token = res.data?.token || "demo-token";
       if (typeof window !== "undefined") {
         localStorage.setItem("auth_token", token);

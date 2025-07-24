@@ -45,8 +45,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 animate-fade-in">
-      <div className="w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/60 bg-white/60 backdrop-blur-lg flex flex-col gap-6 items-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 text-center tracking-tight bg-gradient-to-r from-indigo-700 to-fuchsia-600 text-transparent bg-clip-text drop-shadow-lg">Login</h1>
+      <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/60 bg-white/60 backdrop-blur-lg flex flex-col gap-6 items-center">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4 text-center tracking-tight bg-gradient-to-r from-indigo-700 to-fuchsia-600 text-transparent bg-clip-text">Login</h1>
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5" aria-label="Login Form">
           <label htmlFor="phone" className="font-semibold text-gray-700">
             Phone Number

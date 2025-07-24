@@ -26,12 +26,11 @@ export default function ProfilePage() {
         });
         setUser(res.data);
       } catch (err) {
-        // If network error but token exists, use fallback profile from localStorage
         if (!err.response) {
           const phoneFallback = typeof window !== "undefined" ? localStorage.getItem("user_phone") : null;
           const nameFallback = typeof window !== "undefined" ? localStorage.getItem("user_name") : "User";
-          const detailsFallback = typeof window !== "undefined" ? localStorage.getItem("user_details") : "";
-          setUser({ name: nameFallback, phone: phoneFallback || "Unknown", details: detailsFallback });
+          const emailFallback = typeof window !== "undefined" ? localStorage.getItem("user_email") : "";
+          setUser({ name: nameFallback, phone: phoneFallback || "Unknown", email: emailFallback });
         } else {
           setError("Session expired. Please login again.");
           setTimeout(() => router.replace("/login"), 1500);
@@ -52,6 +51,10 @@ export default function ProfilePage() {
     } catch (e) {}
     if (typeof window !== "undefined") {
       localStorage.removeItem("auth_token");
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("user_phone");
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("auth_action");
     }
     setShowToast(true);
     setTimeout(() => {
@@ -82,13 +85,13 @@ export default function ProfilePage() {
       <div className="w-full max-w-md bg-white/60 p-8 rounded-3xl shadow-2xl border border-white/60 backdrop-blur-lg flex flex-col items-center gap-4 glassmorphic-card">
         <h1 className="text-3xl font-extrabold mb-2 text-center tracking-tight bg-gradient-to-r from-indigo-700 to-fuchsia-600 text-transparent bg-clip-text drop-shadow-lg">Profile</h1>
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-green-300 flex items-center justify-center text-4xl font-bold text-white mb-2 shadow-md">
-          {user?.name?.[0] || user?.phone?.[0] || "U"}
+          {user?.name?.[0] || "U"}
         </div>
         <div className="text-lg font-semibold text-gray-800">{user?.name || "User"}</div>
-        <div className="text-gray-500 mb-2">{user?.phone}</div>
-        {user?.details && (
-          <p className="text-gray-700 text-center whitespace-pre-wrap mb-4 max-w-sm">{user.details}</p>
+        {user?.email && (
+          <div className="text-gray-500 mb-2">{user.email}</div>
         )}
+        <div className="text-gray-500 mb-2">{user?.phone}</div>
         <div className="mb-4 text-green-700 font-semibold">Authentication status: Authenticated</div>
         <button
           onClick={handleLogout}
