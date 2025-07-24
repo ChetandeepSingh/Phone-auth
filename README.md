@@ -2,6 +2,8 @@
 
 A modern, responsive authentication system built with Next.js that implements phone number-based OTP authentication. Features a beautiful glassmorphic UI design and secure authentication flow.
 
+**[🚀 View Live Demo](https://phone-auth-system.netlify.app/)**
+
 ## ✨ Features
 
 ### Authentication Flow
